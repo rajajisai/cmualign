@@ -60,7 +60,7 @@ print(g.num_node_features)
 g.generate_ids()
 print(g.is_directed())
 print(g.n_id)
-g.remove_edge_index(0)
+# g.remove_edge_index(0)
 print(g.e_id)
 
 # print(g.x)
