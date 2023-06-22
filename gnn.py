@@ -49,6 +49,7 @@ class GNNLayer(MessagePassing):
         print(feat_j)
         # print(feat)
         # print(edge_index)
+        
         # Step 4: Normalize node features.
         return feat_j
 
