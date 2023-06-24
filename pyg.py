@@ -5,13 +5,13 @@ import torch.nn as nn
 from torch_geometric.data import Data
 #num
 class GNN(nn.Module):
-    def __init__(self,feat_dim,hidden_dim,num_neighbour_samples,num_negatives,num_layers,num_relations):
+    def __init__(self,in_dim,hidden_dim,num_neighbour_samples,num_negatives,num_layers,num_relations):
         super(GNN,self).__init__()
         self.layers=nn.ModuleList()
         #Stack GNN layers
-        self.layers.append(GNNlayer(in_dim,out_feat))
+        self.layers.append(GNNlayer(in_dim,hidden_dim))
         for i in range(num_layers):
-            self.layers.append(GNNlayer(2*out_feat,out_feat,num_relations))
+            self.layers.append(GNNlayer(2*hidden_dim,hidden_dim,num_relations))
 
         
     def forward(self,g,node_indices=None,edge_indices=None):
@@ -24,29 +24,32 @@ class GNN(nn.Module):
         return feat
 
 
-class GNNlayer(MessagePassing):
-    def __init__(self,feat_dim,hidden_dim,num_relations):
+class GNNLayer(MessagePassing):
+    def __init__(self,in_dim,hidden_dim,num_relations):
         super().__init__(aggr='add')
         #Relations layer per GNN layers
         for i in range(num_relations):
-            self.relation_layers.append(nn.Linear(feat_dim,hidden_dim,num_relations))
+            self.relation_layers.append(FeatureTransformer(in_dim,hidden_dim))
         
         #Implement Self attention
     
-    def forward(self,g,edge_indices):
+    def forward(self,g,edge_index,feat):
         
-        for i in edge_indices:
-            self.relation_layers(edg)
-        
-        return g.x
+        h=self.propagate(edge_index,feat,num_relations)
 
-    def message(self,edge_index,feat_i):
-        # x_j has shape [E, out_channels]
-        # print("----HERe__-")
-        # print(feat)
-        # print(edge_index)
-        # Step 4: Normalize node features.
+        
+        return h
+
+    def message(self,edge_index,feat_i,feat_j,num_relations):
+        
         return feat_i
+
+class FeatureTransformer(nn.Module):
+    def __init__(self,in_dim,out_dim,num):
+        self.linear=nn.linear(feat_out,out_dim,bias=True)
+    
+    def forward(in_feat):
+        return self.linear(in_feat)
 
 x=torch.tensor([[4,1,1,7],[1,1,1,9],[1,1,1,10],[1,1,1,10]])
 # x=torch.tensor([[0,1,1],[1,1,1]])

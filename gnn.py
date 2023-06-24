@@ -34,7 +34,7 @@ class GNNLayer(MessagePassing):
     
     def forward(self,g,feat,edge_index=None):
         # print("-------In Forward------")
-        edge_index=torch.tensor([[0,1],[0,0]])
+        edge_index=torch.tensor([[0,1],[2,0]])
         # print(feat)
         temp_feat=self.layer(feat)
         feat=torch.cat((temp_feat,temp_feat),dim=1)
@@ -49,7 +49,7 @@ class GNNLayer(MessagePassing):
         print(feat_j)
         # print(feat)
         # print(edge_index)
-        
+
         # Step 4: Normalize node features.
         return feat_j
 
